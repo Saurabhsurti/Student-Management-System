@@ -1,0 +1,126 @@
+{% extends 'base.html' %} {% block content %}
+<div class="page-header">
+  <div class="row align-items-center">
+    <div class="col">
+      <h3 class="page-title">Feedback</h3>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+        <li class="breadcrumb-item active">Feedback</li>
+      </ul>
+    </div>
+    <div class="col-auto text-right float-right ml-auto">
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal"
+      >
+        Feedback History
+      </button>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-body">
+        <form method="post" action="{% url 'save_staff_feedback' %}">
+          {% csrf_token %}
+
+          <div class="col-12">
+            <h5 class="form-title"><span>Feedback</span></h5>
+          </div>
+
+          {% include 'includes/messages.html' %}
+
+          <div class="col-12 col-sm-6">
+            <div class="form-group">
+              <label>Feedback</label>
+              <textarea
+                class="form-control"
+                name="feedback"
+                rows="10"
+                required
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">Send Feedback</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal -->
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel1">
+          Feedback History
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <table id="table_id" class="table table-hover table-center mb-0">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Feedback</th>
+              <th>Reply</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in staff_feedback %}
+            <tr>
+              <td>
+                <h2 class="table-avatar">
+                  <a href="student-details.html" class="avatar avatar-sm mr-2"
+                    ><img
+                      class="avatar-img rounded-circle"
+                      src="/{{i.staff_id.admin.profile_pic}}"
+                      alt="User Image"
+                  /></a>
+                  <a href="student-details.html"
+                    >{{i.staff_id.admin.first_name}}&nbsp;{{i.staff_id.admin.last_name}}</a
+                  >
+                </h2>
+              </td>
+              <td>{{i.feedback}}</td>
+              <td>
+                {% if i.feedback_reply %}
+                <div>{{i.feedback_reply}}</div>
+                {% else %}
+                <div>No Reply</div>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

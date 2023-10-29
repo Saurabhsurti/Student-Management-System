@@ -1,0 +1,128 @@
+{% extends 'base.html' %} {% block content %}
+<div class="content container-fluid">
+  <div class="page-header">
+    <div class="row align-items-center">
+      <div class="col">
+        <h3 class="page-title">Subject Attendance</h3>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a href="subjects.html">Dashboard</a></li>
+          <li class="breadcrumb-item active">Attendance</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  {% include 'includes/messages.html' %}
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-body">
+          {% if not action %}
+          <form method="post" action="?action=take_attendance">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-12"> 
+                <h5 class="form-title"><span>Your Subjects</span></h5>
+              </div>
+              <div class="col-12 col-sm-6">
+                <label>Subject</label>
+                <select class="form-control" name="subject_id" required>
+                  <option>Select Subject</option>
+                  {% for i in subjects %}
+                  <option value="{{i.id}}">{{i.name}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-12 col-sm-6">
+                <label>Session Year</label>
+                <select class="form-control" name="session_year_id" required>
+                  <option>Select Session Year</option>
+                  {% for i in session_year %}
+                  <option value="{{i.id}}">
+                    {{i.session_start}} To {{i.session_end}}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-12 mt-5">
+                <button type="submit" class="btn btn-primary">
+                  Take Attendance
+                </button>
+              </div>
+            </div>
+          </form>
+          {% else %}
+          <form action="{% url 'staff_save_attendance' %}" method="post">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-12">
+                <h5 class="form-title"><span>Subject Attendance</span></h5>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="form-group">
+                  <label>Subject Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="subject_name"
+                    value="{{get_subject}}"
+                    disabled
+                  />
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="subject_id"
+                    value="{{get_subject.id}}"
+                    hidden
+                  />
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <label>Session Year</label>
+                <div class="form-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    value="{{get_session_year}}"
+                    disabled
+                  />
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="session_year_id"
+                    value="{{get_session_year.id}}"
+                    hidden
+                  />
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="form-group">
+                  <label>Attendance Date</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    name="attendance_date"
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <label>Students</label>
+                {% for i in students %}
+                <div class="form-group">
+                  <input type="checkbox" name="student_id" value="{{i.id}}"/>
+                  <span>{{i.admin.first_name}}&nbsp;{{i.admin.last_name}}</span>
+                </div>
+                {% endfor %}
+              </div>
+              <div class="col-12 mt-5">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </div>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
